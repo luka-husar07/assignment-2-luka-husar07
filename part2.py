@@ -77,7 +77,7 @@ def compute_sse_plot(dataset):
     sse_values = []
     for k in range(1, 9):  # k from 1 to 8
         sse = fit_kmeans_sse(dataset, k=k)
-        sse_values.append((float(k), float(sse)))
+        sse_values.append([float(k), float(sse)])
     return sse_values
 
 
@@ -85,8 +85,9 @@ def compute_inertia_plot(dataset):
     inertia_values = []
     for k in range(1, 9):  # k from 1 to 8
         inertia = fit_kmeans_inertia(dataset, k=k)
-        inertia_values.append((float(k), float(inertia)))
+        inertia_values.append([float(k), float(inertia)])
     return inertia_values
+
 
 
 def find_elbow_point(values):
@@ -202,6 +203,7 @@ def compute() -> dict[str, any]:
 
     # dct value should be a string, e.g., "yes" or "no"
     answers["2D: do ks agree?"] = "yes" if optimal_k_sse == optimal_k_inertia else "no"
+
 
     return answers
 
