@@ -6,6 +6,7 @@ from sklearn import cluster
 from sklearn.preprocessing import StandardScaler
 from sklearn.datasets import make_moons, make_circles, make_blobs, make_classification
 from sklearn.cluster import KMeans
+from sklearn.metrics import adjusted_rand_score
 
 
 # ----------------------------------------------------------------------
@@ -122,13 +123,45 @@ def compute() -> dict:
     # Create a pdf of the plots and return in your report.
     #  STUDENT CODE
 
+    def test_initialization_sensitivity(data, k_values=[2, 3], runs=10):
+        sensitive_datasets = set()
+
+        for name, (X, y_true) in data.items():
+            for k in k_values:
+                all_labels = []
+
+                # Run k-means with different seeds
+                for seed in range(runs):
+                    labels = fit_kmeans((X, y_true), k=k, seed=seed)
+                    all_labels.append(labels)
+
+                # Compute pairwise ARI between all runs
+                ari_scores = []
+                for i in range(len(all_labels)):
+                    for j in range(i+1, len(all_labels)):
+                        ari = adjusted_rand_score(all_labels[i], all_labels[j])
+                        ari_scores.append(ari)
+
+                avg_ari = np.mean(ari_scores)
+
+                # If ARI is consistently low, the clustering is unstable
+                if avg_ari < 0.9:  # You can adjust this threshold
+                    sensitive_datasets.add(name)
+                    break  # No need to test k=3 if k=2 is already unstable
+
+        return sorted(list(sensitive_datasets))
+
+
     # Answer: list of dataset abbreviations
     # Look at your plots, and return your answers.
     # The plot is part of your report, a pdf file name "report.pdf", in your repository.
 
     # All datasets appear insensitive to initialization when k=2, 3
     # When k=5, other datasets are sensitive to the initialization.
-    answers["1D: datasets sensitive to initialization"] = None
+    sensitive = test_initialization_sensitivity(data)
+    answers["1D: datasets sensitive to initialization"] = sensitive
+    print(type(sensitive))
+
 
     # Call this function in compute() after fitting k-means
     plot_clusters(data, [2, 3, 5, 10])

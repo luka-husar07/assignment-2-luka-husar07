@@ -77,7 +77,7 @@ def compute_sse_plot(dataset):
     sse_values = []
     for k in range(1, 9):  # k from 1 to 8
         sse = fit_kmeans_sse(dataset, k=k)
-        sse_values.append((k, sse))
+        sse_values.append((k, float(sse)))
     return sse_values
 
 
@@ -85,7 +85,7 @@ def compute_inertia_plot(dataset):
     inertia_values = []
     for k in range(1, 9):  # k from 1 to 8
         inertia = fit_kmeans_inertia(dataset, k=k)
-        inertia_values.append((k, inertia))
+        inertia_values.append((k, float(inertia)))
     return inertia_values
 
 
@@ -201,7 +201,6 @@ def compute() -> dict[str, any]:
     plot_inertia(inertia_values, optimal_k_inertia)# Call the plotting function
 
     # dct value should be a string, e.g., "yes" or "no"
-    optimal_k_sse, optimal_k_inertia = find_optimal_k(answers["2C: SSE plot"], answers["2D: inertia plot"])
     answers["2D: do ks agree?"] = "yes" if optimal_k_sse == optimal_k_inertia else "no"
 
     return answers

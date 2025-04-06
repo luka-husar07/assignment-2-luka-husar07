@@ -32,15 +32,15 @@ def compute():
 
     # return value of scipy.io.loadmat()
     def load_data():
-        data = io.loadmat('hierarchical_toy_data.mat')
-        return data['X']  
+        return io.loadmat('hierarchical_toy_data.mat')
 
-    X = load_data()
-    answers["3A: toy data"] = X
+    X_dict = load_data()
+    answers["3A: toy data"] = X_dict
 
     # B. Create a linkage matrix Z, and plot a dendrogram using the scipy.hierarchy.linkage and
     # scipy.hierachy.dendrogram functions, with “single” linkage.
     # Include the dendrogram plot in your report.
+    X = X_dict['X']
     def create_dendrogram(X):
         Z = linkage(X, method='single')  # Using single linkage
         plt.figure(figsize=(10, 7))
@@ -165,7 +165,6 @@ def single_link_dissimilarity(data, cluster_I, cluster_J):
 # ----------------------------------------------------------------------
 if __name__ == "__main__":
     answers = compute()
-    print(answers["3E: clusters"])
 
     with open("part3.pkl", "wb") as f:
         pickle.dump(answers, f)
